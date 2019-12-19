@@ -5,11 +5,20 @@
 </template>
 
 <script>
+import io from 'socket.io';
 
 export default {
   name: 'Trun',
   components: {
 
+  },
+  data() {
+    return {
+      socket: null,
+    };
+  },
+  mounted() {
+    this.socket = io('http://localhost:3000');
   },
 };
 </script>
