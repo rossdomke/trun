@@ -1,0 +1,23 @@
+{
+  "name": "trun",
+  "version": "1.0.0",
+  "description": "Minimal Tron Light Cycle Game",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/rossdomke/trun.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/rossdomke/trun/issues"
+  },
+  "homepage": "https://github.com/rossdomke/trun#readme",
+  "devDependencies": {
+    "@vue/cli": "^4.1.1"
+  }
+}
