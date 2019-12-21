@@ -1,12 +1,11 @@
 <template>
   <div>
     <h1>Trun</h1>
-    <h3 style="color: darkgreen" v-if="socketConnected">Connected</h3>
+    <h3 style="color: darkgreen" v-if="socketConnected">
+      {{onlineUsers}} Users Online
+    </h3>
     <h3 style="color: darkred" v-else>Disconnected</h3>
-    <input type="text" v-model="message" @keydown.enter="sendMessage" />
-    <ul>
-      <li v-for="(message, idx) in messagesRecieved" :key="idx">{{message}}</li>
-    </ul>
+    <h4>Player Name: {{playerName}}</h4>
   </div>
 </template>
 
@@ -20,13 +19,19 @@ export default {
   data() {
     return {
       socketConnected: false,
-      messagesRecieved: ['test1', 'test2'],
-      message: '',
+      onlineUsers: 0,
+      playerName: '',
     };
+  },
+  created() {
+    this.playerName = 'RandomMooseName';
   },
   sockets: {
     connect() {
       this.socketConnected = true;
+    },
+    connectedUserCount(onlineUsers) {
+      this.onlineUsers = onlineUsers;
     },
     disconnect() {
       this.socketConnected = false;
