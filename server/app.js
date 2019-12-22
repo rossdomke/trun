@@ -10,18 +10,17 @@ let connectedUserCount = 0;
 io.on("connection", socket => {
   connectedUserCount++;
   io.emit('connectedUserCount', connectedUserCount);
-  socket.on('advertise', gameId => {
-    socket.broadcast.emit('advertise', gameId);
+
+  socket.on('advertise', game => {
+    socket.broadcast.emit('advertise', game);
   });
-  socket.on('join', ({ gameId, playerId, playerName, color }) => {
-    console.log(gameId,playerName);
+  socket.on('join', ({ gameId, playerName, playerColor }) => {
     socket.join(`game-${gameId}`);
-    //io.to(`game-${gameId}`).emit('playerJoin', playerName);
-    io.to(`game-${gameId}`).emit('playerJoin', {playerId, playerName, color})
+    io.to(`game-${gameId}`).emit('playerJoin', {id: socket.id, name: playerName, color: playerColor});
   });
   socket.on('leave', gameId => {
     socket.leave(`game-${gameId}`);
-    socket.broadcast.to(`game-${gameId}`).emit('playerLeft');
+    io.to(`game-${gameId}`).emit('userDisconnected', socket.id);
   });
   socket.on('sync', game => {
     socket.broadcast.to(`game-${game.id}`).emit('sync', game);
@@ -29,6 +28,7 @@ io.on("connection", socket => {
   socket.on('disconnect', data => { 
     connectedUserCount--;
     io.emit('connectedUserCount', connectedUserCount);
+    io.emit('userDisconnected', socket.id);
   });
 });
 

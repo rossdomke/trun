@@ -28,10 +28,20 @@ const nouns = [
   'Bear',
 ];
 
-export default {
+const helpers = {
   NameGenerator() {
     const adj = adjectives[Math.floor(Math.random() * adjectives.length)];
     const noun = nouns[Math.floor(Math.random() * nouns.length)];
     return adj + noun;
   },
+  ColorGenerator() {
+    const letters = '0123456789ABCDEF';
+    let color = '#';
+    for (let i = 0; i < 6; i += 1) {
+      color += letters[Math.floor(Math.random() * 16)];
+    }
+    return color;
+  },
 };
+
+export default helpers;

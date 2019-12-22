@@ -4,12 +4,28 @@
     <p>{{onlineUsers}} Players Online</p>
 
     <div v-if="!game.id">
+      <input
+        v-model="game.name"
+        @keydown.enter="createGame"/>
       <button @click="createGame">Create Game</button>
-      <a href="#" v-for="ag in availableGames" :key="ag.gameId" @click="joinGame(ag.gameId)">
-        {{ag}}
+      <br/>
+      <a
+        style="display: block;"
+        href="#"
+        v-for="ag in availableGames"
+        :key="ag.id" @click="joinGame(ag.id)"
+      >
+        {{ ag.name }} - {{ ag.playerCount }}/8 Players
       </a>
     </div>
     <div v-else>
+      <h4>{{this.game.name}}</h4>
+      <button @click="leaveGame" v-if="!isHost">Leave Game</button>
+      <div class="player" v-for="player in game.players" :key="player.id">
+        <div class="player-icon" :style="{ background: player.color }"></div>
+        {{player.name}}
+      </div>
+<hr/>
       {{ game }}
     </div>
     <!-- <trun/> -->
@@ -19,7 +35,7 @@
 <script>
 // import Trun from './components/Trun.vue';
 import _ from 'lodash';
-import NameGenerator from './helpers/NameGenerator';
+import Helpers from './Helpers';
 
 export default {
   name: 'app',
@@ -32,7 +48,9 @@ export default {
       advertiseGame: null,
       game: {
         id: null,
+        name: '',
         players: [],
+        hostId: null,
       },
     };
   },
@@ -40,7 +58,7 @@ export default {
     // Trun,
   },
   created() {
-    this.playerName = NameGenerator.NameGenerator();
+    this.playerName = Helpers.NameGenerator();
   },
   beforeDestroy() {
     clearInterval(this.advertiseGame);
@@ -52,23 +70,43 @@ export default {
     playerJoin(player) {
       this.game.players.push(player);
       this.sync();
+      this.advertise();
     },
     sync(game) {
       this.game = game;
     },
-    advertise(gameId) {
-      const idx = _.findIndex(this.availableGames, ag => ag.gameId === gameId);
+    advertise(game) {
+      const idx = _.findIndex(this.availableGames, ag => ag.id === game.id);
       if (idx !== -1) {
         this.availableGames.splice(idx, 1);
       }
-      this.availableGames.push({ time: Date.now(), gameId });
+      this.availableGames.push({ time: Date.now(), ...game });
+    },
+    userDisconnected(userId) {
+      const idx = _.findIndex(this.game.players, p => p.id === userId);
+      if (idx !== -1) {
+        this.game.players.splice(idx, 1);
+        if (userId === this.game.hostId) this.leaveGame();
+        this.sync();
+        this.advertise();
+      }
     },
   },
-  computed: {},
+  computed: {
+    isHost() {
+      return this.game.hostId === this.$socket.id;
+    },
+  },
   methods: {
     createGame() {
-      this.game = { id: 1, players: [] };
-      this.joinGame(this.game.id);
+      const game = {
+        id: Math.random().toString(36).substr(2, 9),
+        name: this.game.name,
+        hostId: this.$socket.id,
+        players: [],
+      };
+      this.game = game;
+      this.joinGame(game.id);
       this.advertise();
       this.advertiseGame = setInterval(() => {
         this.advertise();
@@ -76,22 +114,27 @@ export default {
       }, 5000);
     },
     advertise() {
-      this.$socket.emit('advertise', this.game.id);
+      if (this.isHost) this.$socket.emit('advertise', { id: this.game.id, name: this.game.name, playerCount: this.game.players.length });
     },
     sync() {
-      this.$socket.emit('sync', this.game);
+      if (this.isHost) this.$socket.emit('sync', this.game);
     },
     joinGame(gameId) {
       this.$socket.emit('join', {
         gameId,
-        playerId: null,
         playerName: this.playerName,
-        color: null,
+        playerColor: Helpers.ColorGenerator(),
       });
     },
     leaveGame() {
       clearInterval(this.advertiseGame);
       this.$socket.emit('leave', this.game.id);
+      this.game = {
+        id: null,
+        name: '',
+        players: [],
+        hostId: '',
+      };
     },
   },
 };
@@ -105,5 +148,12 @@ export default {
   text-align: center;
   color: #2c3e50;
   margin-top: 60px;
+}
+.player {
+  display: block;
+  .player-icon {
+    width: 10px;
+    height: 10px;
+  }
 }
 </style>
