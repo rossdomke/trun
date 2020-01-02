@@ -1,11 +1,15 @@
 const express = require("express")();
+const serveStatic = require('serve-static');
+const path = require('path');
 const server = require("http").createServer(express);
 const io = require("socket.io")(server);
 const PORT = process.env.PORT || 3000
 
-express.get('/', (req, res, next) => {
-  res.send('hello world');
+express.get('/dirname', (req, res, next) => {
+  res.send(__dirname);
 });
+express.use('/', serveStatic(path.join(__dirname, '../client/dist')));
+
 let connectedUserCount = 0;
 io.on("connection", socket => {
   connectedUserCount++;
