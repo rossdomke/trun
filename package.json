@@ -6,7 +6,7 @@
   "scripts": {
     "start": "node server/app.js",
     "build": "run-s build-client",
-    "install": "run-p install:*",
+    //"install": "run-p install:*",
     "install:client": "cd client && npm install",
     "install:server": "cd server && npm install",
     "build-client": "cd client && npm run build",
