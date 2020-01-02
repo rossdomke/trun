@@ -4,7 +4,8 @@
   "description": "Minimal Tron Light Cycle Game",
   "main": "index.js",
   "scripts": {
-    "start": "run-s build-client run-server",
+    "start": "node server/app.js",
+    "build": "run-s build-client",
     "install": "run-p install:*",
     "install:client": "cd client && npm install",
     "install:server": "cd server && npm install",
