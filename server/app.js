@@ -1,7 +1,7 @@
 const express = require("express")();
 const server = require("http").createServer(express);
 const io = require("socket.io")(server);
-
+const PORT = process.env.PORT || 3000
 
 express.get('/', (req, res, next) => {
   res.send('hello world');
@@ -32,6 +32,6 @@ io.on("connection", socket => {
   });
 });
 
-server.listen(3000, () => {
-  console.log("Listening at :3000");
+server.listen(PORT, () => {
+  console.log(`Listening at :${PORT}`);
 });
