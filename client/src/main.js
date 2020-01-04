@@ -8,7 +8,7 @@ import App from './App.vue';
 // Vue.use(VueSocketIO, SocketInstance);
 Vue.use(new VueSocketIO({
   debug: true,
-  connection: 'http://localhost:3000',
+  connection: 'https://trun-cycles.herokuapp.com/',
 }));
 
 Vue.config.productionTip = false;
