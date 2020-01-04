@@ -1,10 +1,13 @@
 {
-  "name": "client",
+  "name": "trun",
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "serve": "vue-cli-service serve",
+    "serve": "run-p client server",
+    "client": "vue-cli-service serve",
+    "server": "nodemon server/",
     "build": "vue-cli-service build",
+    "start": "node server/",
     "lint": "vue-cli-service lint"
   },
   "dependencies": {
