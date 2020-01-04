@@ -8,7 +8,7 @@ const PORT = process.env.PORT || 3000
 express.get('/dirname', (req, res, next) => {
   res.send(__dirname);
 });
-express.use('/', serveStatic(path.join(__dirname, '../client/dist')));
+express.use('/', serveStatic(path.join(__dirname, '../dist')));
 
 let connectedUserCount = 0;
 io.on("connection", socket => {
