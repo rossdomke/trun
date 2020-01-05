@@ -3,9 +3,7 @@ import Vue from 'vue';
 import VueSocketIO from 'vue-socket.io';
 import App from './App.vue';
 
-const connection = '//localhost:3000/'; // https://trun.domke.io
-
-// const SocketInstance = new Socketio('http://localhost:3000');
+const connection = process.env.NODE_ENV === 'development' ? '//localhost:3000/' : '/'; // https://trun.domke.io
 
 // Vue.use(VueSocketIO, SocketInstance);
 Vue.use(new VueSocketIO({
