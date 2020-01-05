@@ -1,5 +1,5 @@
 <template>
-  <div class="text-center">
+  <div>
     <h1>Trun</h1>
   </div>
 </template>
@@ -14,6 +14,12 @@ export default {
 
   h1 {
     color: $trun-blue;
+    text-align: center;
+    font-size: 8em;
+    letter-spacing: .25em;
+    margin: 0;
+    padding: 0;
+    border-bottom: solid 1px $trun-blue;
   }
 
 

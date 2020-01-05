@@ -1,6 +1,44 @@
 @import "./trun_vars.scss";
 
-@import "node_modules/bootstrap/scss/bootstrap";
+
 body {
   background: $trun-dark;
+  font-family: Arial, Helvetica, sans-serif;
+  margin: 0;
+  padding: 0;
+  color: $font-color;
+}
+
+.clickable {
+  cursor: pointer;
+}
+.button { 
+  padding: 10px 15px;
+  border: solid 1px white;
+  display: inline-block;
+  margin: 3px;
+  cursor: pointer;
+  transition: all ease .25s;
+  &.blue {
+    color: $trun-blue;
+    border-color: $trun-blue;
+    &:hover {
+      color: lighten($trun-blue, 5%);
+      border-color: lighten($trun-blue, 5%);
+    } 
+  }
+
+  &.orange {
+    color: $trun-orange;
+    border-color: $trun-orange;
+    &:hover {
+      color: lighten($trun-orange, 5%);
+      border-color: lighten($trun-orange, 5%);
+    }
+  }
+
+  &:hover {
+    background-color: rgba(0,0,0,0.7);     
+    box-shadow: 1px 1px 4px 0px lighten($trun-dark, 30%);
+  }
 }
