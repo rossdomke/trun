@@ -3,17 +3,18 @@ const serveStatic = require('serve-static');
 const path = require('path');
 const server = require("http").createServer(express);
 const io = require("socket.io")(server);
+const fs = require("fs");
+// const actions = require("../client/store/action-types");
 const PORT = process.env.PORT || 3000
 
-express.get('/dirname', (req, res, next) => {
-  res.send(__dirname);
-});
-express.use('/', serveStatic(path.join(__dirname, '../dist')));
+express.use('/', serveStatic(path.join(__dirname, '../dist/client/')));
 
 let connectedUserCount = 0;
 io.on("connection", socket => {
+  console.log(socket.id, ' connected');
   connectedUserCount++;
   io.emit('connectedUserCount', connectedUserCount);
+  // io.emit(actions.PLAYER_COUNT_UPDATE, connectedUserCount);
 
   socket.on('advertise', game => {
     socket.broadcast.emit('advertise', game);
@@ -32,6 +33,7 @@ io.on("connection", socket => {
   socket.on('disconnect', data => { 
     connectedUserCount--;
     io.emit('connectedUserCount', connectedUserCount);
+    // io.emit(actions.PLAYER_COUNT_UPDATE, connectedUserCount);
     io.emit('userDisconnected', socket.id);
   });
 });

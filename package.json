@@ -5,9 +5,11 @@
   "scripts": {
     "serve": "run-p client server",
     "client": "vue-cli-service serve",
-    "server": "nodemon server/",
-    "build": "vue-cli-service build",
-    "start": "node server/",
+    "server": "nodemon --exec babel-node server/",
+    "build": "run-p build:*",
+    "build:client": "vue-cli-service build",
+    "build:server": "webpack",
+    "start": "node dist/server",
     "lint": "vue-cli-service lint"
   },
   "dependencies": {
@@ -24,7 +26,10 @@
     "vuex": "^3.1.2"
   },
   "devDependencies": {
-    "npm-run-all": "^4.1.5",
+    "@babel/cli": "^7.7.7",
+    "@babel/core": "^7.7.7",
+    "@babel/node": "^7.7.7",
+    "@babel/preset-env": "^7.7.7",
     "@vue/cli": "^4.1.1",
     "@vue/cli-plugin-babel": "^4.1.0",
     "@vue/cli-plugin-eslint": "^4.1.0",
@@ -34,7 +39,11 @@
     "eslint": "^5.16.0",
     "eslint-plugin-vue": "^5.0.0",
     "node-sass": "^4.12.0",
+    "npm-run-all": "^4.1.5",
     "sass-loader": "^8.0.0",
-    "vue-template-compiler": "^2.6.10"
+    "vue-template-compiler": "^2.6.10",
+    "webpack": "^4.41.5",
+    "webpack-cli": "^3.3.10",
+    "webpack-node-externals": "^1.7.2"
   }
 }

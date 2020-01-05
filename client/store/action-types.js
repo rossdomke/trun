@@ -1,0 +1,3 @@
+export const SOCKET_ACTION_PREFIX = 'SOCK_A_';
+export const PLAYER_COUNT_UPDATE = `${SOCKET_ACTION_PREFIX}PLAYER_COUNT_UPDATE`;
+export const s = '';
