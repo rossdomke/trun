@@ -24,9 +24,12 @@ io.on('connection', (socket) => {
   socket.on('advertise', (game) => {
     socket.broadcast.emit('advertise', game);
   });
-  socket.on('join', ({ gameId, playerName, playerColor }) => {
+  socket.on('test', (a) => {
+    console.log(a, socket.id);
+  });
+  socket.on('join', ({ gameId, player }) => {
     socket.join(`game-${gameId}`);
-    io.to(`game-${gameId}`).emit('playerJoin', {id: socket.id, name: playerName, color: playerColor});
+    io.to(`game-${gameId}`).emit('playerJoin', { id: socket.id, name: player.name, color: player.color });
   });
   socket.on('leave', (gameId) => {
     socket.leave(`game-${gameId}`);

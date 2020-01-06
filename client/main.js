@@ -15,7 +15,7 @@ const connection = process.env.NODE_ENV === 'development' ? 'http://localhost:30
 Vue.component('font-awesome-icon', FontAwesomeIcon);
 
 // Vue.use(VueSocketIO, SocketInstance);
-Vue.use(new VueSocketIO({
+const vueSocketIO = new VueSocketIO({
   debug: process.env.NODE_ENV === 'development',
   connection,
   vuex: {
@@ -23,11 +23,14 @@ Vue.use(new VueSocketIO({
     actionPrefix: SOCKET_ACTION_PREFIX,
     mutationPrefix: SOCKET_MUTATION_PREFIX,
   },
-}));
+});
+
+Vue.use(vueSocketIO);
+Vue.prototype.$socket = vueSocketIO;
 
 Vue.config.productionTip = false;
 
-new Vue({
+export default new Vue({
   render: h => h(Trun),
   router,
   store,
