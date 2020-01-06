@@ -7,5 +7,5 @@ module.exports = {
       title: 'Trun',
     },
   },
-  outputDir: 'dist/client/'
+  outputDir: 'dist/client/',
 };
