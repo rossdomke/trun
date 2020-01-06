@@ -1,5 +1,6 @@
 <template>
   <div>
+    <br/>
     <p class="player-count">{{ playerCount }} Players Online</p>
     <logo/>
     <p class="welcome">
@@ -8,8 +9,18 @@
       <font-awesome-icon icon="dice" @click="nameChange" class="clickable" />
     </p>
     <div class="create-join">
-      <div class="button blue">Create</div>
-      <div class="button orange">Join</div>
+      <router-link
+        to="/create"
+        class="button blue"
+      >
+        Create
+      </router-link>
+      <router-link
+        to="/join"
+        class="button orange"
+      >
+        Join
+      </router-link>
     </div>
   </div>
 </template>
@@ -41,7 +52,7 @@ export default {
 
   .welcome {
     text-align: center;
-    font-size: 1.1em;
+    font-size: 1.5em;
   }
   .player-count {
     margin: 0;
@@ -52,6 +63,7 @@ export default {
   }
   .create-join {
     text-align: center;
+    font-size: 1.5em;
     >.button {
       margin: 0px 10px
     }

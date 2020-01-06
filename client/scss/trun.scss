@@ -8,9 +8,24 @@ body {
   padding: 0;
   color: $font-color;
 }
-
+a {
+  text-decoration: none;
+}
 .clickable {
   cursor: pointer;
+}
+.text-light { 
+  color: $trun-light !important;
+}
+.text-dark { 
+  color: $trun-dark;
+}
+.px-2 {
+  padding-left: 10px !important;
+  padding-right: 10px !important;
+}
+.pt-2 {
+  padding-top: 10px !important;
 }
 .button { 
   padding: 10px 15px;

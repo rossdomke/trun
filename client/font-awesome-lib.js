@@ -4,8 +4,12 @@ import {
 
 import {
   faDice,
+  faHome,
+  faUser,
 } from '@fortawesome/free-solid-svg-icons';
 
 library.add(faDice);
+library.add(faHome);
+library.add(faUser);
 
 export default library;

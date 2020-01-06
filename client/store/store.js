@@ -22,7 +22,7 @@ const store = new Vuex.Store({
       checkSum: null,
     },
     player: {
-      // id: null,
+      id: null,
       name: null,
       color: null,
       secret: null,
@@ -33,13 +33,25 @@ const store = new Vuex.Store({
 
   },
   mutations: {
+    [SOCKET_MUTATION_PREFIX + m.CONNECT](state, socketId) {
+      state.player.id = socketId;
+    },
     [m.CHANGE_NAME](state) {
       state.player.name = NameGenerator();
       state.player.color = ColorGenerator();
       state.player.secret = IdGenerator();
+      console.log(this.$socket);
+      // state.player.id = this.$socket.id;
     },
     [SOCKET_MUTATION_PREFIX + a.PLAYER_COUNT_UPDATE](state, payload) {
       state.serverStatus.onlinePlayerCount = payload;
+    },
+    [m.CREATE_GAME](state, payload) {
+      const game = {
+        id: IdGenerator(),
+        name: payload,
+      };
+      state.game = game;
     },
   },
   actions: {

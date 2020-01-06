@@ -23,6 +23,6 @@ export default {
     margin: 0 auto !important;
     float: none !important;
     background: lighten($trun-dark, 5%);
-    padding: 10px;
+    padding: 0px 0px 60px;
   }
 </style>
