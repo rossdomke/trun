@@ -1,5 +1,6 @@
 import Vue from 'vue';
 import Vuex from 'vuex';
+import _ from 'lodash';
 
 import * as m from './mutation-types';
 import * as a from './action-types';
@@ -34,7 +35,6 @@ const store = new Vuex.Store({
   },
   mutations: {
     [SOCKET_MUTATION_PREFIX + m.CONNECT](state, socketId) {
-      console.log('your socket', this._vm.$socket.io.id, socketId);
       state.player.id = socketId;
     },
     [m.CHANGE_NAME](state) {
@@ -42,7 +42,7 @@ const store = new Vuex.Store({
       state.player.color = ColorGenerator();
       state.player.secret = IdGenerator();
     },
-    [SOCKET_MUTATION_PREFIX + a.PLAYER_COUNT_UPDATE](state, payload) {
+    [SOCKET_MUTATION_PREFIX + m.PLAYER_COUNT_UPDATE](state, payload) {
       state.serverStatus.onlinePlayerCount = payload;
     },
     [m.CREATE_GAME](state, gameName) {
@@ -51,11 +51,22 @@ const store = new Vuex.Store({
       state.game.host = state.player.id;
       state.game.players = [];
     },
+    [SOCKET_MUTATION_PREFIX + m.PLAYER_JOIN](state, player) {
+      const idx = _.findIndex(state.game.players, p => p.id === player.id);
+      if (idx !== -1) state.game.players.splice(idx, 1);
+      state.game.players.push(player);
+    },
+    [SOCKET_MUTATION_PREFIX + m.PLAYER_DISCONNECT](state, playerId) {
+      const idx = _.findIndex(state.game.players, p => p.id === playerId);
+      if (idx !== -1) state.game.players.splice(idx, 1);
+    },
   },
   actions: {
-    joinGame({ state }, gameId) {
-      this._vm.$socket.io.emit('', { gameId, player: state.player } );
-      console.log(gameId);
+    [a.JOIN_GAME]({ state }, gameId) {
+      this._vm.$socket.io.emit(a.JOIN_GAME, { gameId, player: state.player });
+    },
+    [a.LEAVE_GAME](state) {
+      this._vm.$socket.io.emit(a.LEAVE_GAME, state.game.id);
     },
   },
 });

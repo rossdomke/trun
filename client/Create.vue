@@ -4,17 +4,23 @@
     <logo />
     <h1 class="px-2">Create new game</h1>
     <div class="input-container">
-      <input class="name-input" v-model="gameName" placeholder="Game Name" />
+      <input
+        class="name-input"
+        v-model="gameName"
+        placeholder="Game Name"
+        @keydown.enter="createGame" />
     </div>
     <div class="input-container pt-2">
-      <div class="button orange create-button">Create Game</div>
+      <div class="button orange create-button" @click="createGame">Create Game</div>
     </div>
   </div>
 </template>
 
 <script>
+import { mapMutations, mapState } from 'vuex';
 import TopNav from './components/TopNav.vue';
 import Logo from './components/Logo.vue';
+import { CREATE_GAME } from './store/mutation-types';
 
 export default {
   name: 'create',
@@ -26,6 +32,19 @@ export default {
   components: {
     TopNav,
     Logo,
+  },
+  computed: {
+    ...mapState(['game']),
+  },
+  methods: {
+    createGame() {
+      this.storeCreateGame(this.gameName);
+      this.$router.push({ name: 'game', params: { id: this.game.id } });
+      console.log('game created');
+    },
+    ...mapMutations({
+      storeCreateGame: CREATE_GAME,
+    }),
   },
 };
 </script>

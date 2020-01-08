@@ -8,18 +8,22 @@ import Game from './Game.vue';
 
 const routes = [
   {
+    name: 'home',
     path: '/',
     component: Home,
   },
   {
+    name: 'create',
     path: '/create',
     component: Create,
   },
   {
+    name: 'join',
     path: '/join',
     component: Join,
   },
   {
+    name: 'game',
     path: '/game/:id',
     component: Game,
   },

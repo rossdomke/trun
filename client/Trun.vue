@@ -1,17 +1,22 @@
 <template>
   <div class="container">
-    <router-view></router-view>
+    <router-view v-if="isOnline"></router-view>
+    <h1 v-else>Offline</h1>
   </div>
 </template>
 <script>
 import './scss/trun.scss';
+import { mapState } from 'vuex';
 
 export default {
   name: 'trun',
   components: {
   },
   computed: {
-
+    isOnline() {
+      return this.player.id !== null;
+    },
+    ...mapState(['player']),
   },
 };
 </script>

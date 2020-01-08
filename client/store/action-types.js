@@ -1,4 +1,4 @@
 // import { SOCKET_ACTION_PREFIX } from './socket-prefix';
 
-export const PLAYER_COUNT_UPDATE = 'PLAYER_COUNT_UPDATE';
-export const s = '';
+export const JOIN_GAME = 'JOIN_GAME';
+export const LEAVE_GAME = 'LEAVE_GAME';
