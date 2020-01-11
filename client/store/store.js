@@ -65,7 +65,6 @@ const store = new Vuex.Store({
       if (idx !== -1) state.game.players.splice(idx, 1);
     },
     [SOCKET_MUTATION_PREFIX + m.SYNC](state, game) {
-      console.log('GAME STATE RECIEVED: ', game);
       state.game = game;
     },
     [SOCKET_MUTATION_PREFIX + m.ADVERTISE](state, game) {
@@ -76,6 +75,7 @@ const store = new Vuex.Store({
       state.serverStatus.availableGames.push(advGame);
     },
     [SOCKET_MUTATION_PREFIX + m.MESSAGE_RECIEVE](state, message) {
+      console.log('message recieved', message);
       state.serverStatus.messages.push(message);
     },
   },

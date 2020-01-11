@@ -15,10 +15,10 @@
     </ul>
     <hr />
     <h3>Chat</h3>
-    <input :model="messageText" type="text" @keydown.enter="sendMessage"/>
+    <input v-model="messageText" type="text" @keyup.enter="sendMessage"/>
     <ul>
       <li v-for="message in serverStatus.messages" :key="message.sentAt">
-        {{ message }}
+        {{ message.name}} - {{ message.text }}
       </li>
     </ul>
     <hr />
@@ -62,6 +62,7 @@ export default {
   },
   methods: {
     sendMessage() {
+      console.log('sending message', this.messageText);
       this.emitMessage(this.messageText);
       this.messageText = '';
     },

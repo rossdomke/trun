@@ -33,17 +33,16 @@ io.on('connection', (socket) => {
     io.to(`game-${gameId}`).emit(mutations.PLAYER_DISCONNECT, socket.id);
   });
   socket.on(actions.SYNC, (game) => {
-    console.log('SYNC', game);
     socket.broadcast.to(`game-${game.id}`).emit(mutations.SYNC, game);
     if (game.advertising) {
-      console.log('ADVERT');
       socket.broadcast.emit(mutations.ADVERTISE, game);
     }
   });
   socket.on(actions.MESSAGE_SEND, (message) => {
-    io
-      .to(`game-${message.gameId}`)
-      .emit(mutations.MESSAGE_RECIEVE, { sentAt: Date.now(), ...message });
+    console.log('message recieved', message);
+    const newMessage = message;
+    newMessage.sentAt = Date.now();
+    io.to(`game-${message.gameId}`).emit(mutations.MESSAGE_RECIEVE, newMessage);
   });
   socket.on('disconnect', () => {
     connectedUserCount -= 1;
