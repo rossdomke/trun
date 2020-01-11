@@ -7,3 +7,5 @@ export const PLAYER_COUNT_UPDATE = 'PLAYER_COUNT_UPDATE';
 export const SYNC = 'SYNC';
 export const ADVERTISE = 'ADVERTISE';
 export const MESSAGE_RECIEVE = 'MESSAGE_RECIEVE';
+export const LEAVE_GAME = 'LEAVE_GAME';
+export const GAME_TAKEOVER = 'GAME_TAKEOVER';

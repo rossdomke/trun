@@ -6,11 +6,11 @@
     <h3>Players</h3>
     <ul>
       <li
-        v-for="player in this.game.players"
-        :key="player.id"
-        :style="{color: player.color}"
+        v-for="gamePlayer in this.game.players"
+        :key="gamePlayer.id"
+        :style="{color: gamePlayer.color}"
       >
-        {{ player.name }}
+        <span v-if="gamePlayer.id === game.host">(Host)</span> {{ gamePlayer.name }}
       </li>
     </ul>
     <hr />

@@ -60,7 +60,7 @@ const store = new Vuex.Store({
       if (idx !== -1) state.game.players.splice(idx, 1);
       state.game.players.push(player);
     },
-    [SOCKET_MUTATION_PREFIX + m.PLAYER_DISCONNECT](state, playerId) {
+    [m.PLAYER_DISCONNECT](state, playerId) {
       const idx = _.findIndex(state.game.players, p => p.id === playerId);
       if (idx !== -1) state.game.players.splice(idx, 1);
     },
@@ -78,6 +78,22 @@ const store = new Vuex.Store({
       console.log('message recieved', message);
       state.serverStatus.messages.push(message);
     },
+    [m.LEAVE_GAME](state) {
+      state.game = {
+        id: null,
+        host: null,
+        players: [],
+        status: null,
+        state: [],
+        checkSum: null,
+        advertising: false,
+      };
+      state.serverStatus.messages = [];
+      state.serverStatus.availableGames = [];
+    },
+    [m.GAME_TAKEOVER](state) {
+      state.game.host = state.player.id;
+    },
   },
   actions: {
     [a.MESSAGE_SEND]({ state }, messageText) {
@@ -88,6 +104,16 @@ const store = new Vuex.Store({
         text: messageText,
       });
     },
+    [SOCKET_ACTION_PREFIX + m.PLAYER_DISCONNECT]({ state, commit, dispatch }, playerId) {
+      commit(m.PLAYER_DISCONNECT, playerId);
+      if (state.game.host === playerId) {
+        const nextHost = _.find(state.game.players, p => p.id !== playerId);
+        if (nextHost.id === state.player.id) {
+          commit(m.GAME_TAKEOVER);
+          dispatch(a.SYNC);
+        }
+      }
+    },
     [SOCKET_ACTION_PREFIX + a.PLAYER_JOIN]({ commit, dispatch }, player) {
       commit(m.PLAYER_JOIN, player);
       dispatch(a.SYNC);
@@ -95,13 +121,12 @@ const store = new Vuex.Store({
     [a.JOIN_GAME]({ state }, gameId) {
       this._vm.$socket.io.emit(a.JOIN_GAME, { gameId, player: state.player });
     },
-    [a.LEAVE_GAME]({ state }) {
+    [a.LEAVE_GAME]({ state, commit }) {
       this._vm.$socket.io.emit(a.LEAVE_GAME, state.game.id);
+      commit(m.LEAVE_GAME);
     },
     [a.SYNC]({ state }) {
-      console.log('sync called');
       if (state.game.host === state.player.id) {
-        console.log('sync: ', state.game);
         this._vm.$socket.io.emit(a.SYNC, state.game);
       }
     },
