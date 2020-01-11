@@ -14,6 +14,7 @@ const store = new Vuex.Store({
     serverStatus: {
       onlinePlayerCount: 0,
       availableGames: [],
+      messages: [],
     },
     game: {
       id: null,
@@ -70,10 +71,23 @@ const store = new Vuex.Store({
     [SOCKET_MUTATION_PREFIX + m.ADVERTISE](state, game) {
       const idx = _.findIndex(state.serverStatus.availableGames, ag => ag.id === game.id);
       if (idx !== -1) state.serverStatus.availableGames.splice(idx, 1);
-      state.serverStatus.availableGames.push(game);
+      const advGame = game;
+      advGame.lastHeardAt = Date.now();
+      state.serverStatus.availableGames.push(advGame);
+    },
+    [SOCKET_MUTATION_PREFIX + m.MESSAGE_RECIEVE](state, message) {
+      state.serverStatus.messages.push(message);
     },
   },
   actions: {
+    [a.MESSAGE_SEND]({ state }, messageText) {
+      this._vm.$socket.io.emit(a.MESSAGE_SEND, {
+        gameId: state.game.id,
+        name: state.player.name,
+        color: state.player.color,
+        text: messageText,
+      });
+    },
     [SOCKET_ACTION_PREFIX + a.PLAYER_JOIN]({ commit, dispatch }, player) {
       commit(m.PLAYER_JOIN, player);
       dispatch(a.SYNC);

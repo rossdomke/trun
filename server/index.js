@@ -40,6 +40,11 @@ io.on('connection', (socket) => {
       socket.broadcast.emit(mutations.ADVERTISE, game);
     }
   });
+  socket.on(actions.MESSAGE_SEND, (message) => {
+    io
+      .to(`game-${message.gameId}`)
+      .emit(mutations.MESSAGE_RECIEVE, { sentAt: Date.now(), ...message });
+  });
   socket.on('disconnect', () => {
     connectedUserCount -= 1;
     io.emit(mutations.PLAYER_COUNT_UPDATE, connectedUserCount);
