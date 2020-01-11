@@ -40,7 +40,6 @@ export default {
     createGame() {
       this.storeCreateGame(this.gameName);
       this.$router.push({ name: 'game', params: { id: this.game.id } });
-      console.log('game created');
     },
     ...mapMutations({
       storeCreateGame: CREATE_GAME,

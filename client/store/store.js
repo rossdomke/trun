@@ -68,7 +68,8 @@ const store = new Vuex.Store({
       state.game = game;
     },
     [SOCKET_MUTATION_PREFIX + m.ADVERTISE](state, game) {
-      console.log('ADVERTISE RECIEVED: ', game);
+      const idx = _.findIndex(state.serverStatus.availableGames, ag => ag.id === game.id);
+      if (idx !== -1) state.serverStatus.availableGames.splice(idx, 1);
       state.serverStatus.availableGames.push(game);
     },
   },
