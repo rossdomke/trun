@@ -24,21 +24,21 @@ io.on('connection', (socket) => {
   socket.on('advertise', (game) => {
     socket.broadcast.emit('advertise', game);
   });
-  socket.on('test', (a) => {
-    console.log(a, socket.id);
-  });
   socket.on(actions.JOIN_GAME, ({ gameId, player }) => {
-    console.log('game', gameId, 'player', player);
     socket.join(`game-${gameId}`);
-    io.to(`game-${gameId}`).emit(mutations.PLAYER_JOIN, player);
+    io.to(`game-${gameId}`).emit(actions.PLAYER_JOIN, player);
   });
   socket.on(actions.LEAVE_GAME, (gameId) => {
-    console.log('game', gameId, 'player', socket.id);
     socket.leave(`game-${gameId}`);
     io.to(`game-${gameId}`).emit(mutations.PLAYER_DISCONNECT, socket.id);
   });
-  socket.on('sync', (game) => {
-    socket.broadcast.to(`game-${game.id}`).emit('sync', game);
+  socket.on(actions.SYNC, (game) => {
+    console.log('SYNC', game);
+    socket.broadcast.to(`game-${game.id}`).emit(mutations.SYNC, game);
+    if (game.advertising) {
+      console.log('ADVERT');
+      socket.broadcast.emit(mutations.ADVERTISE, game);
+    }
   });
   socket.on('disconnect', () => {
     connectedUserCount -= 1;

@@ -13,6 +13,21 @@ const adjectives = [
   'Angry',
   'Happy',
   'Deadly',
+  'Super',
+  'Scary',
+  'Chipper',
+  'Bright',
+  'Smart',
+  'Silly',
+  'Rowdy',
+  'Figety',
+  'Foolish',
+  'Bold',
+  'Cranky',
+  'Pretty',
+  'Poor',
+  'Petite',
+  'Golden',
 ];
 
 const nouns = [
@@ -26,6 +41,14 @@ const nouns = [
   'Snake',
   'Clown',
   'Bear',
+  'Frog',
+  'Lizard',
+  'Snail',
+  'Spider',
+  'Bug',
+  'Ant',
+  'Armadillo',
+  'Coffee',
 ];
 
 export const NameGenerator = () => {

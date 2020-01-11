@@ -18,7 +18,7 @@
 
 <script>
 import { mapState, mapActions } from 'vuex';
-import { JOIN_GAME, LEAVE_GAME } from './store/action-types';
+import { JOIN_GAME, LEAVE_GAME, SYNC } from './store/action-types';
 import TopNav from './components/TopNav.vue';
 
 export default {
@@ -28,14 +28,18 @@ export default {
   },
   data() {
     return {
-
+      advertiseGame: null,
     };
   },
   created() {
     this.joinGame(this.$route.params.id);
+    this.advertiseGame = setInterval(() => {
+      this.sync();
+    }, 5000);
   },
   beforeDestroy() {
     this.leaveGame();
+    clearInterval(this.advertiseGame);
   },
   computed: {
     ...mapState(['player', 'game']),
@@ -44,6 +48,7 @@ export default {
     ...mapActions({
       joinGame: JOIN_GAME,
       leaveGame: LEAVE_GAME,
+      sync: SYNC,
     }),
   },
 };
