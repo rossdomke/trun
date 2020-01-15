@@ -118,9 +118,12 @@ const store = new Vuex.Store({
       dispatch(a.SYNC);
     },
     [a.JOIN_GAME]({ state }, gameId) {
+      console.log('JOINING GAME', gameId);
       this._vm.$socket.io.emit(a.JOIN_GAME, { gameId, player: state.player });
     },
     [a.LEAVE_GAME]({ state, commit }) {
+      // TODO handle when game ID is not set
+      // Maybe do it server side if null id unsub from all
       this._vm.$socket.io.emit(a.LEAVE_GAME, state.game.id);
       commit(m.LEAVE_GAME);
     },

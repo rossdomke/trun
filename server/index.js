@@ -46,7 +46,7 @@ io.on('connection', (socket) => {
   socket.on('disconnect', () => {
     connectedUserCount -= 1;
     io.emit(mutations.PLAYER_COUNT_UPDATE, connectedUserCount);
-    io.emit(mutations.PLAYER_DISCONNECT, socket.id);
+    io.emit(actions.PLAYER_DISCONNECT, socket.id);
   });
 });
 
