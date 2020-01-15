@@ -24,6 +24,7 @@ const store = new Vuex.Store({
       state: [],
       checkSum: null,
       advertising: false,
+      lastSync: null,
     },
     player: {
       id: null,
@@ -60,11 +61,7 @@ const store = new Vuex.Store({
       if (idx !== -1) state.game.players.splice(idx, 1);
       state.game.players.push(player);
     },
-    [m.PLAYER_DISCONNECT](state, playerId) {
-      const idx = _.findIndex(state.game.players, p => p.id === playerId);
-      if (idx !== -1) state.game.players.splice(idx, 1);
-    },
-    [SOCKET_MUTATION_PREFIX + m.SYNC](state, game) {
+    [m.SYNC](state, game) {
       state.game = game;
     },
     [SOCKET_MUTATION_PREFIX + m.ADVERTISE](state, game) {
@@ -75,7 +72,7 @@ const store = new Vuex.Store({
       state.serverStatus.availableGames.push(advGame);
     },
     [SOCKET_MUTATION_PREFIX + m.MESSAGE_RECIEVE](state, message) {
-      console.log('message recieved', message);
+      console.log('message recieved');
       state.serverStatus.messages.push(message);
     },
     [m.LEAVE_GAME](state) {
@@ -87,12 +84,10 @@ const store = new Vuex.Store({
         state: [],
         checkSum: null,
         advertising: false,
+        lastSync: null,
       };
       state.serverStatus.messages = [];
       state.serverStatus.availableGames = [];
-    },
-    [m.GAME_TAKEOVER](state) {
-      state.game.host = state.player.id;
     },
   },
   actions: {
@@ -104,15 +99,19 @@ const store = new Vuex.Store({
         text: messageText,
       });
     },
-    [SOCKET_ACTION_PREFIX + m.PLAYER_DISCONNECT]({ state, commit, dispatch }, playerId) {
-      commit(m.PLAYER_DISCONNECT, playerId);
-      if (state.game.host === playerId) {
-        const nextHost = _.find(state.game.players, p => p.id !== playerId);
+    [SOCKET_ACTION_PREFIX + a.PLAYER_DISCONNECT]({ state, commit, dispatch }, playerId) {
+      const sGame = _.clone(state.game);
+      const idx = _.findIndex(sGame.players, p => p.id === playerId);
+      console.log('player disconnecting', playerId);
+      if (idx !== -1) sGame.players.splice(idx, 1);
+      if (sGame.host === playerId) {
+        const nextHost = _.first(sGame.players);
         if (nextHost.id === state.player.id) {
-          commit(m.GAME_TAKEOVER);
-          dispatch(a.SYNC);
+          sGame.host = state.player.id;
         }
       }
+      commit(m.SYNC, sGame);
+      dispatch(a.SYNC);
     },
     [SOCKET_ACTION_PREFIX + a.PLAYER_JOIN]({ commit, dispatch }, player) {
       commit(m.PLAYER_JOIN, player);
@@ -125,10 +124,35 @@ const store = new Vuex.Store({
       this._vm.$socket.io.emit(a.LEAVE_GAME, state.game.id);
       commit(m.LEAVE_GAME);
     },
-    [a.SYNC]({ state }) {
+    [SOCKET_ACTION_PREFIX + a.SYNC]({ commit }, game) {
+      commit(m.SYNC, game);
+    },
+    [a.SYNC]({ state, commit, dispatch }, gameId) {
       if (state.game.host === state.player.id) {
+        console.log('syncing');
         this._vm.$socket.io.emit(a.SYNC, state.game);
+      } else {
+        if (state.game.lastSync === null) {
+          const sGame = state.game;
+          sGame.lastSync = Date.now();
+          commit(m.SYNC, sGame);
+          return;
+        }
+
+        const timePassed = Date.now() - state.game.lastSync;
+        if (timePassed > (Math.random() * 30 + 11) * 1000) {
+          const sGame = state.game;
+          sGame.id = gameId;
+          sGame.host = state.player.id;
+          sGame.name = `${state.player.name}'s Game!`;
+          sGame.players = [];
+          sGame.advertising = true;
+          commit(m.SYNC, sGame);
+          dispatch(a.SYNC);
+        }
       }
+      const idx = _.findIndex(state.game.players, p => p.id === state.player.id);
+      if (idx === -1) dispatch(a.JOIN_GAME, gameId);
     },
   },
 });

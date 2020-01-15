@@ -21,21 +21,20 @@ io.on('connection', (socket) => {
   connectedUserCount += 1;
   io.emit(mutations.PLAYER_COUNT_UPDATE, connectedUserCount);
   socket.emit(mutations.CONNECT, socket.id);
-  socket.on('advertise', (game) => {
-    socket.broadcast.emit('advertise', game);
-  });
   socket.on(actions.JOIN_GAME, ({ gameId, player }) => {
     socket.join(`game-${gameId}`);
     io.to(`game-${gameId}`).emit(actions.PLAYER_JOIN, player);
   });
   socket.on(actions.LEAVE_GAME, (gameId) => {
     socket.leave(`game-${gameId}`);
-    io.to(`game-${gameId}`).emit(mutations.PLAYER_DISCONNECT, socket.id);
+    io.to(`game-${gameId}`).emit(actions.PLAYER_DISCONNECT, socket.id);
   });
   socket.on(actions.SYNC, (game) => {
-    socket.broadcast.to(`game-${game.id}`).emit(mutations.SYNC, game);
-    if (game.advertising) {
-      socket.broadcast.emit(mutations.ADVERTISE, game);
+    const sGame = game;
+    sGame.lastSync = Date.now();
+    socket.broadcast.to(`game-${sGame.id}`).emit(mutations.SYNC, sGame);
+    if (sGame.advertising) {
+      socket.broadcast.emit(mutations.ADVERTISE, sGame);
     }
   });
   socket.on(actions.MESSAGE_SEND, (message) => {
