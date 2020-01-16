@@ -15,6 +15,12 @@ const io = socketIO(server);
 const PORT = process.env.PORT || 3000;
 
 express.use('/', serveStatic(path.join(__dirname, '../dist/client/')));
+function leaveAllRooms(socket) {
+  const rooms = Object.keys(io.sockets.adapter.sids[socket.id]);
+  for (let i = 0; i < rooms.length; i += 1) {
+    if (socket.id !== rooms[i]) socket.leave(rooms[i]);
+  }
+}
 
 let connectedUserCount = 0;
 io.on('connection', (socket) => {
@@ -26,6 +32,7 @@ io.on('connection', (socket) => {
     io.to(`game-${gameId}`).emit(actions.PLAYER_JOIN, player);
   });
   socket.on(actions.LEAVE_GAME, (gameId) => {
+    leaveAllRooms(socket);
     socket.leave(`game-${gameId}`);
     io.to(`game-${gameId}`).emit(actions.PLAYER_DISCONNECT, socket.id);
   });
