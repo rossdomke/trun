@@ -2,7 +2,8 @@
   <div>
     <top-nav />
     <div id="wait" v-if="!this.game.id">
-      <h1>Waiting On Host..<span @click="test2">.</span></h1>
+      <h1>Waiting On Host..<span @click="forceTakeover" class="clickable">.</span>
+      </h1>
     </div>
     <div id="game-container" v-if="this.game.id">
       <h1>{{ this.game.name }}</h1>
@@ -75,8 +76,7 @@ export default {
       this.emitMessage(this.messageText);
       this.messageText = '';
     },
-    test2() {
-      console.log('taking control');
+    forceTakeover() {
       const g = _.clone(this.game);
       g.lastSync = 1;
       this.commitSync(g);
