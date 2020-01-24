@@ -4,7 +4,7 @@ import VueRouter from 'vue-router';
 import Home from './Home.vue';
 import Create from './Create.vue';
 import Join from './Join.vue';
-import Game from './Game.vue';
+import Lobby from './Lobby.vue';
 
 const routes = [
   {
@@ -25,7 +25,7 @@ const routes = [
   {
     name: 'game',
     path: '/game/:id',
-    component: Game,
+    component: Lobby,
   },
 ];
 const router = new VueRouter({ routes });

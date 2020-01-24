@@ -47,7 +47,7 @@ import { SOCKET_ACTION_PREFIX } from './store/socket-prefix';
 import TopNav from './components/TopNav.vue';
 
 export default {
-  name: 'game',
+  name: 'lobby',
   components: {
     TopNav,
   },
