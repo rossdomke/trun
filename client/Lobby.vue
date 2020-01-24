@@ -6,6 +6,11 @@
       </h1>
     </div>
     <div id="game-container" v-if="this.game.id">
+      <player-container
+        :players="game.players"
+        :currentPlayerId="player.id"
+        :hostId="game.host"
+      />
       <h1>{{ this.game.name }}</h1>
       <hr />
       <h3>Players</h3>
@@ -45,11 +50,13 @@ import {
 } from './store/action-types';
 import { SOCKET_ACTION_PREFIX } from './store/socket-prefix';
 import TopNav from './components/TopNav.vue';
+import PlayerContainer from './components/PlayerContainer.vue';
 
 export default {
   name: 'lobby',
   components: {
     TopNav,
+    PlayerContainer,
   },
   data() {
     return {
