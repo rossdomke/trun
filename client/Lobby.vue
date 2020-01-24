@@ -11,21 +11,9 @@
         :currentPlayerId="player.id"
         :hostId="game.host"
       />
-      <h1>{{ this.game.name }}</h1>
-      <hr />
-      <h3>Players</h3>
-      <ul>
-        <li
-          v-for="gamePlayer in this.game.players"
-          :key="gamePlayer.id"
-          :style="{color: gamePlayer.color}"
-        >
-          <span v-if="gamePlayer.id === game.host">(Host)</span>
-          {{ gamePlayer.name }}
-          <span v-if="gamePlayer.id === player.id">&lt;== You</span>
-        </li>
-      </ul>
-      <hr />
+      <game />
+      <chat />
+      <hr/>
       <h3>Chat</h3>
       <input v-model="messageText" type="text" @keyup.enter="sendMessage"/>
       <ul>
@@ -51,12 +39,16 @@ import {
 import { SOCKET_ACTION_PREFIX } from './store/socket-prefix';
 import TopNav from './components/TopNav.vue';
 import PlayerContainer from './components/PlayerContainer.vue';
+import Game from './components/Game.vue';
+import Chat from './components/Chat.vue';
 
 export default {
   name: 'lobby',
   components: {
     TopNav,
     PlayerContainer,
+    Game,
+    Chat,
   },
   data() {
     return {
