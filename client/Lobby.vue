@@ -14,14 +14,6 @@
       <game />
       <chat />
       <hr/>
-      <h3>Chat</h3>
-      <input v-model="messageText" type="text" @keyup.enter="sendMessage"/>
-      <ul>
-        <li v-for="message in serverStatus.messages" :key="message.sentAt">
-          {{ message.name}} - {{ message.text }}
-        </li>
-      </ul>
-      <hr />
       <small>Game: {{ this.game }}</small>
     </div>
   </div>
@@ -34,7 +26,6 @@ import {
   JOIN_GAME,
   LEAVE_GAME,
   SYNC,
-  MESSAGE_SEND,
 } from './store/action-types';
 import { SOCKET_ACTION_PREFIX } from './store/socket-prefix';
 import TopNav from './components/TopNav.vue';
@@ -54,7 +45,6 @@ export default {
     return {
       advertiseGame: null,
       hostTimeout: null,
-      messageText: '',
     };
   },
   created() {
@@ -71,10 +61,6 @@ export default {
     ...mapState(['player', 'game', 'serverStatus']),
   },
   methods: {
-    sendMessage() {
-      this.emitMessage(this.messageText);
-      this.messageText = '';
-    },
     forceTakeover() {
       const g = _.clone(this.game);
       g.lastSync = 1;
@@ -86,7 +72,6 @@ export default {
       leaveGame: LEAVE_GAME,
       sync: SYNC,
       commitSync: SOCKET_ACTION_PREFIX + SYNC,
-      emitMessage: MESSAGE_SEND,
     }),
   },
 };

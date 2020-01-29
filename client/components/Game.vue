@@ -6,7 +6,7 @@
         <span>{{ gameStatus }}</span>
       </div>
     </div>
-    <canvas ref="game" class="game"></canvas>
+    <canvas ref="game" class="game" />
   </div>
 </template>
 
@@ -58,6 +58,9 @@ export default {
 <style lang="scss" scoped>
   .game-container {
     position: relative;
+  }
+  .game {
+    display: block;
   }
   .game-cover {
     position: absolute;
