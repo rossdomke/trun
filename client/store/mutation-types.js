@@ -9,3 +9,4 @@ export const MESSAGE_RECIEVE = 'MESSAGE_RECIEVE';
 export const LEAVE_GAME = 'LEAVE_GAME';
 export const GAME_TAKEOVER = 'GAME_TAKEOVER';
 export const GAME_MISSING_HOST = 'GAME_MISSING_HOST';
+export const CHAT_HELP = 'CHAT_HELP';

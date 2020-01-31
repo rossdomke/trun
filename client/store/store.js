@@ -89,6 +89,26 @@ const store = new Vuex.Store({
       state.serverStatus.messages = [];
       state.serverStatus.availableGames = [];
     },
+    [m.CHAT_HELP](state) {
+      state.serverStatus.messages.push({
+        name: 'system',
+        color: 'red',
+        textColor: 'lightgrey',
+        text: 'List of available commands: ',
+        sentAt: Date.now(),
+      });
+      const commands = [
+        '/help - shows this menu',
+      ];
+      commands.forEach((c) => {
+        state.serverStatus.messages.push({
+          name: '',
+          textColor: 'lightgrey',
+          text: `>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;${c}`,
+          sentAt: Date.now(),
+        });
+      });
+    },
   },
   actions: {
     [a.MESSAGE_SEND]({ state }, messageText) {
