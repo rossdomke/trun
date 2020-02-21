@@ -6,7 +6,7 @@
     <p class="welcome">
       Welcome:
       <span class="playerName" :style="{ color: player.color}">{{ player.name }}</span>&nbsp;
-      <font-awesome-icon icon="dice" @click="nameChange" class="clickable" />
+      <font-awesome-icon icon="dice" @click="randomizePlayer();" class="clickable" />
     </p>
     <div class="create-join">
       <router-link
@@ -26,7 +26,7 @@
 </template>
 <script>
 import { mapState, mapMutations } from 'vuex';
-import { CHANGE_NAME } from './store/mutation-types';
+import { CHANGE_NAME, CHANGE_COLOR } from './store/mutation-types';
 import Logo from './components/Logo.vue';
 
 export default {
@@ -35,8 +35,13 @@ export default {
     Logo,
   },
   methods: {
+    randomizePlayer() {
+      this.nameChange();
+      this.colorChange();
+    },
     ...mapMutations({
       nameChange: CHANGE_NAME,
+      colorChange: CHANGE_COLOR,
     }),
   },
   computed: {

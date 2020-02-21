@@ -1,4 +1,5 @@
 export const CHANGE_NAME = 'CHANGE_NAME';
+export const CHANGE_COLOR = 'CHANGE_COLOR';
 export const CREATE_GAME = 'CREATE_GAME';
 export const CONNECT = 'CONNECT';
 export const PLAYER_JOIN = 'PLAYER_JOIN';

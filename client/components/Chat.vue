@@ -28,7 +28,7 @@
 <script>
 import _ from 'lodash';
 import { mapState, mapActions, mapMutations } from 'vuex';
-import { MESSAGE_SEND } from '../store/action-types';
+import { MESSAGE_SEND, PLAYER_CHANGE_NAME, PLAYER_CHANGE_COLOR } from '../store/action-types';
 import { CHAT_HELP } from '../store/mutation-types';
 
 export default {
@@ -50,19 +50,43 @@ export default {
   methods: {
     sendMessage() {
       const message = this.messageText.trim();
-      if (message === '') return;
-      if (message.match(/^\/help/)) {
-        this.chatHelp();
-      } else {
-        this.emitMessage(this.messageText);
-      }
       this.messageText = '';
+      if (message === '') return;
+      const [match, command, param] = message.match(/^(\/\S*)(.*)/i) || new Array(3);
+      console.log(match);
+      switch (command.toLowerCase()) {
+        case '/help':
+          this.chatHelp();
+          break;
+        case '/name':
+          this.changeName(param.trim());
+          break;
+        case '/color':
+          this.changeColor(param.trim());
+          break;
+        default:
+          this.emitMessage(message);
+          break;
+      }
+      // if (message.match(/^\/help/i)) {
+      //   this.chatHelp();
+      // }
+      // if (message.match(/^\/name/i)) {
+      //   this.changeName();
+      // }
+      // if (message.match(/^\/color/i)) {
+      //   this.changeColor();
+      // } else {
+      //   this.emitMessage(this.messageText);
+      // }
     },
     ...mapMutations({
       chatHelp: CHAT_HELP,
     }),
     ...mapActions({
       emitMessage: MESSAGE_SEND,
+      changeName: PLAYER_CHANGE_NAME,
+      changeColor: PLAYER_CHANGE_COLOR,
     }),
   },
 };

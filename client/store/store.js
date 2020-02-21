@@ -41,10 +41,22 @@ const store = new Vuex.Store({
     [SOCKET_MUTATION_PREFIX + m.CONNECT](state, socketId) {
       state.player.id = socketId;
     },
-    [m.CHANGE_NAME](state) {
-      state.player.name = NameGenerator();
-      state.player.color = ColorGenerator();
-      state.player.secret = IdGenerator();
+    [m.CHANGE_NAME](state, name) {
+      state.player.name = name || NameGenerator();
+    },
+    [m.CHANGE_COLOR](state, color) {
+      let clr = color;
+      if (color && !color.match(/^#[0-9a-fA-F]{6}/)) {
+        state.serverStatus.messages.push({
+          name: 'system',
+          color: 'red',
+          textColor: 'lightred',
+          text: `Color must be valid 6 char hex color (${ColorGenerator()})`,
+          sentAt: Date.now(),
+        });
+        clr = null;
+      }
+      state.player.color = clr || ColorGenerator();
     },
     [SOCKET_MUTATION_PREFIX + m.PLAYER_COUNT_UPDATE](state, payload) {
       state.serverStatus.onlinePlayerCount = payload;
@@ -72,7 +84,6 @@ const store = new Vuex.Store({
       state.serverStatus.availableGames.push(advGame);
     },
     [SOCKET_MUTATION_PREFIX + m.MESSAGE_RECIEVE](state, message) {
-      console.log('message recieved');
       state.serverStatus.messages.push(message);
     },
     [m.LEAVE_GAME](state) {
@@ -90,27 +101,39 @@ const store = new Vuex.Store({
       state.serverStatus.availableGames = [];
     },
     [m.CHAT_HELP](state) {
+      const timestamp = Date.now();
       state.serverStatus.messages.push({
         name: 'system',
         color: 'red',
         textColor: 'lightgrey',
         text: 'List of available commands: ',
-        sentAt: Date.now(),
+        sentAt: timestamp - 1,
       });
       const commands = [
         '/help - shows this menu',
+        '/name <name> - change player name',
+        '/color - change to random color',
       ];
-      commands.forEach((c) => {
+      commands.forEach((c, i) => {
+        console.log(i);
         state.serverStatus.messages.push({
           name: '',
           textColor: 'lightgrey',
           text: `>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;${c}`,
-          sentAt: Date.now(),
+          sentAt: timestamp - 2 * (i + 1),
         });
       });
     },
   },
   actions: {
+    [a.PLAYER_CHANGE_NAME]({ state, commit, dispatch }, name) {
+      commit(m.CHANGE_NAME, name);
+      if (state.game && state.game.id) dispatch(a.JOIN_GAME, state.game.id);
+    },
+    [a.PLAYER_CHANGE_COLOR]({ state, commit, dispatch }, color) {
+      commit(m.CHANGE_COLOR, color);
+      if (state.game && state.game.id) dispatch(a.JOIN_GAME, state.game.id);
+    },
     [a.MESSAGE_SEND]({ state }, messageText) {
       this._vm.$socket.io.emit(a.MESSAGE_SEND, {
         gameId: state.game.id,
@@ -179,4 +202,5 @@ const store = new Vuex.Store({
 });
 
 store.commit(m.CHANGE_NAME);
+store.commit(m.CHANGE_COLOR);
 export default store;
