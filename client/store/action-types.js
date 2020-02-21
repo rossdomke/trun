@@ -9,3 +9,4 @@ export const PLAYER_DISCONNECT = 'PLAYER_DISCONNECT';
 export const MESSAGE_SEND = 'MESSAGE_SEND';
 export const SYNC = 'SYNC';
 export const GAME_MISSING_HOST = 'GAME_MISSING_HOST';
+export const GAME_CHANGE_NAME = 'GAME_CHANGE_NAME';

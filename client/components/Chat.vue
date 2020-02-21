@@ -28,7 +28,12 @@
 <script>
 import _ from 'lodash';
 import { mapState, mapActions, mapMutations } from 'vuex';
-import { MESSAGE_SEND, PLAYER_CHANGE_NAME, PLAYER_CHANGE_COLOR } from '../store/action-types';
+import {
+  MESSAGE_SEND,
+  PLAYER_CHANGE_NAME,
+  PLAYER_CHANGE_COLOR,
+  GAME_CHANGE_NAME,
+} from '../store/action-types';
 import { CHAT_HELP } from '../store/mutation-types';
 
 export default {
@@ -64,21 +69,13 @@ export default {
         case '/color':
           this.changeColor(param.trim());
           break;
+        case '/game-name':
+          this.changeGameName(param.trim());
+          break;
         default:
           this.emitMessage(message);
           break;
       }
-      // if (message.match(/^\/help/i)) {
-      //   this.chatHelp();
-      // }
-      // if (message.match(/^\/name/i)) {
-      //   this.changeName();
-      // }
-      // if (message.match(/^\/color/i)) {
-      //   this.changeColor();
-      // } else {
-      //   this.emitMessage(this.messageText);
-      // }
     },
     ...mapMutations({
       chatHelp: CHAT_HELP,
@@ -87,6 +84,7 @@ export default {
       emitMessage: MESSAGE_SEND,
       changeName: PLAYER_CHANGE_NAME,
       changeColor: PLAYER_CHANGE_COLOR,
+      changeGameName: GAME_CHANGE_NAME,
     }),
   },
 };

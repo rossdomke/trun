@@ -111,8 +111,9 @@ const store = new Vuex.Store({
       });
       const commands = [
         '/help - shows this menu',
-        '/name <name> - change player name',
+        '/name {name} - change player name',
         '/color - change to random color',
+        '/game-name {name} - change the game name',
       ];
       commands.forEach((c, i) => {
         console.log(i);
@@ -151,9 +152,10 @@ const store = new Vuex.Store({
         const nextHost = _.first(sGame.players);
         if (nextHost.id === state.player.id) {
           sGame.host = state.player.id;
+          sGame.name = `${state.player.name}'s Game!`;
+          commit(m.SYNC, sGame);
         }
       }
-      commit(m.SYNC, sGame);
       dispatch(a.SYNC);
     },
     [SOCKET_ACTION_PREFIX + a.PLAYER_JOIN]({ commit, dispatch }, player) {
@@ -161,7 +163,6 @@ const store = new Vuex.Store({
       dispatch(a.SYNC);
     },
     [a.JOIN_GAME]({ state }, gameId) {
-      console.log('JOINING GAME', gameId);
       this._vm.$socket.io.emit(a.JOIN_GAME, { gameId, player: state.player });
     },
     [a.LEAVE_GAME]({ state, commit }) {
@@ -170,6 +171,11 @@ const store = new Vuex.Store({
     },
     [SOCKET_ACTION_PREFIX + a.SYNC]({ commit }, game) {
       commit(m.SYNC, game);
+    },
+    [a.GAME_CHANGE_NAME]({ state, commit, dispatch }, name) {
+      if (state.player.id !== state.game.host) return;
+      commit(m.SYNC, { ...state.game, name: name || `${state.player.name}'s Game!` });
+      dispatch(a.SYNC);
     },
     [a.SYNC]({ state, commit, dispatch }, gameId) {
       if (state.game.host === state.player.id) {
